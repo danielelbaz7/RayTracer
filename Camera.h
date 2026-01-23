@@ -41,7 +41,7 @@ private:
 
     //this will create and return a ray based on how far we are inot the array
     Ray MakeRay(int xi, int yi) {
-        return Ray();
+        return Ray(this->cv, xi, yi);
     }
 
 
