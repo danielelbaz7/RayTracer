@@ -11,9 +11,12 @@ struct Sphere {
     int radius;
     Vector3 center;
 
+
     enum class Color : int {
         RED = 0xFF0000, GREEN = 0x00FF00, BLUE = 0x0000FF
     };
+
+    Color color{};
 
     //max distance dictates the max size of the ray, lower is the initial
     std::pair<bool, float> Intersects(const Camera::Ray &ray, int lowerDistance, int maxDistance) const {
