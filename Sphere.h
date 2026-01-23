@@ -16,7 +16,7 @@ struct Sphere {
     };
 
     //max distance dictates the max size of the ray, lower is the initial
-    std::pair<bool, float> IntersectionPoints(Camera::Ray ray, int lowerDistance, int maxDistance) {
+    std::pair<bool, float> Intersects(const Camera::Ray &ray, int lowerDistance, int maxDistance) const {
         //calculate the discriminate and see if it can even be square rooted
         float dDotP = dot(ray.direction, ray.origin);
         float discriminate = dDotP * dDotP - dot(ray.origin, ray.origin) + 1;

@@ -25,4 +25,8 @@ inline float dot(const Vector3& a, const Vector3& b) {
     return a.x * b.x + a.y * b.y + a.z * b.z;
 }
 
+inline Vector3 operator/(const Vector3& a, float b) {
+    return {a.x / b, a.y / b, a.z / b};
+}
+
 #endif // RAYTRACER_VECTOR3_H

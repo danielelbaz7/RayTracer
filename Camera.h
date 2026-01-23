@@ -30,7 +30,8 @@ public:
         //resets position to 0,0 in world space, then adds the amount of pixels
         origin{
             cv.pos + (cv.right * -(((WIDTH/2) - xi) * PIXEL_DISTANCE)) + (cv.up * (((HEIGHT/2) - yi) * PIXEL_DISTANCE))
-            }, direction{cv.lookAt} {};
+            },
+        direction{cv.lookAt/sqrt(dot(cv.lookAt, cv.lookAt))} {};
     };
 
 private:
