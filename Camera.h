@@ -33,8 +33,9 @@ private:
         Vector3 origin;
         Vector3 direction;
         Ray(cameraValues &cv, int xi, int yi) :
+        //resets position to 0,0 in world space, then adds the amount of pixels
         origin{
-            cv.pos
+        cv.pos + (cv.right * -(((WIDTH/2) - xi) * PIXEL_DISTANCE)) + (cv.up * (((HEIGHT/2) - yi) * PIXEL_DISTANCE))
         }, direction{cv.lookAt} {};
     };
 
