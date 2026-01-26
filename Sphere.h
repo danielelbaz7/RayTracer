@@ -6,6 +6,7 @@
 #define RAYTRACER_SPHERE_H
 #pragma once
 #include "Vector3.h"
+#include "Ray.h"
 
 struct Sphere {
     int radius;
@@ -18,7 +19,7 @@ struct Sphere {
     Color color{};
 
     //max distance dictates the max size of the ray, lower is the initial
-    std::pair<bool, float> Intersects(const Camera::Ray &ray, int lowerDistance, int maxDistance) const {
+    std::pair<bool, float> Intersects(const Ray &ray, int lowerDistance, int maxDistance) const {
         //calculate the discriminate and see if it can even be square rooted
         float dDotP = dot(ray.direction, ray.origin - this->center);
         float discriminate = dDotP * dDotP - dot(ray.origin - this->center, ray.origin - this->center) + 1;

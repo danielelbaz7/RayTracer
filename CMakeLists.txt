@@ -9,4 +9,5 @@ add_executable(RayTracer main.cpp
         Camera.cpp
         World.cpp
         World.h
-        Vector3.h)
+        Vector3.h
+        Ray.h)

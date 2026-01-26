@@ -9,34 +9,17 @@
 #include <vector>
 #include "Vector3.h"
 #include "Sphere.h"
-
+#include "Ray.h"
 
 
 class Camera {
 private:
-    struct cameraValues {
-        Vector3 pos{};
-        Vector3 right{1,0,0};
-        Vector3 up{0,1,0};
-        Vector3 lookAt{0,0,1};
-    };
-
     const std::vector<Sphere> &spheres;
 
 public:
     Camera(const std::vector<Sphere> &spheresVec) : spheres(spheresVec) {};
     uint8_t* RayTrace();
 
-    struct Ray {
-        Vector3 origin;
-        Vector3 direction;
-        Ray(cameraValues &cv, int xi, int yi) :
-        //resets position to 0,0 in world space, then adds the amount of pixels
-        origin{
-            cv.pos + (cv.right * -(((WIDTH/2) - xi) * PIXEL_DISTANCE)) + (cv.up * (((HEIGHT/2) - yi) * PIXEL_DISTANCE))
-            },
-        direction{cv.lookAt/sqrt(dot(cv.lookAt, cv.lookAt))} {};
-    };
 
 private:
     static constexpr int WIDTH{256};
