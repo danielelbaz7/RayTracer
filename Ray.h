@@ -8,13 +8,13 @@
 
 
 struct cameraValues {
-    Vector3 pos{};
-    Vector3 right{1,0,0};
-    Vector3 up{0,1,0};
-    Vector3 lookAt{0,0,1};
-    int WIDTH{256};
-    int HEIGHT{256};
-    float PIXEL_DISTANCE{0.05};
+    Vector3 pos;
+    Vector3 right;
+    Vector3 up;
+    Vector3 lookAt;
+    int WIDTH;
+    int HEIGHT;
+    float PIXEL_DISTANCE;
 };
 
 struct Ray {

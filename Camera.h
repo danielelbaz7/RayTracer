@@ -15,20 +15,21 @@
 class Camera {
 private:
     const std::vector<Sphere> &spheres;
+    static constexpr float PIXEL_DISTANCE{0.05};
+    static constexpr int WIDTH{256};
+    static constexpr int HEIGHT{256};
 
 public:
-    Camera(const std::vector<Sphere> &spheresVec) : spheres(spheresVec) {};
-    uint8_t* RayTrace();
+    Camera(const std::vector<Sphere> &spheresVec) : spheres(spheresVec) {}
+    std::array<std::array<uint8_t, WIDTH*3>, HEIGHT> RayTrace();
 
 
 private:
-    static constexpr int WIDTH{256};
-    static constexpr int HEIGHT{256};
-    static constexpr float PIXEL_DISTANCE{0.05};
+    std::array<std::array<uint8_t, WIDTH*3>, HEIGHT> frameBuffer{};
 
-    uint8_t frameBuffer[HEIGHT][WIDTH*3];
-
-    cameraValues cv{};
+    cameraValues cv{
+        {0,0,0},
+        {1,0,0}, {0,1,0}, {0,0,1}, WIDTH, HEIGHT, PIXEL_DISTANCE};
 
     //this will create and return a ray based on how far we are inot the array
     Ray MakeRay(int xi, int yi) {
