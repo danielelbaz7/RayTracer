@@ -7,14 +7,17 @@
 #include <vector>
 
 #include "Sphere.h"
+#include "Camera.h"
 
 
 class World {
 public:
     void AddSphere(const Sphere &s);
+    World() : camera(spheres) {};
+    Camera camera;
 
 private:
-    std::vector<Sphere> spheres;
+    std::vector<Sphere> spheres{};
 };
 
 

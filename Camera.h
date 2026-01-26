@@ -4,10 +4,11 @@
 
 #ifndef RAYTRACER_CAMERA_H
 #define RAYTRACER_CAMERA_H
-#include <vector>
+#pragma once
 
-#include "Sphere.h"
+#include <vector>
 #include "Vector3.h"
+#include "Sphere.h"
 
 
 
@@ -20,8 +21,11 @@ private:
         Vector3 lookAt{0,0,1};
     };
 
+    const std::vector<Sphere> &spheres;
+
 public:
-    uint8_t* RayTrace(const std::vector<Sphere>& spheres);
+    Camera(const std::vector<Sphere> &spheresVec) : spheres(spheresVec) {};
+    uint8_t* RayTrace();
 
     struct Ray {
         Vector3 origin;

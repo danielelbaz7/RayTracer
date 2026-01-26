@@ -4,13 +4,12 @@
 
 #ifndef RAYTRACER_SPHERE_H
 #define RAYTRACER_SPHERE_H
+#pragma once
 #include "Vector3.h"
-#include "Camera.h"
 
 struct Sphere {
     int radius;
     Vector3 center;
-
 
     enum class Color : int {
         RED = 0xFF0000, GREEN = 0x00FF00, BLUE = 0x0000FF
@@ -30,6 +29,8 @@ struct Sphere {
         float smallestT = std::min(-dDotP + sqrt(discriminate), -dDotP - sqrt(discriminate));
         return {true, smallestT};
     }
+
+    Sphere(int r, const Vector3 &c, Color co) : radius(r), center(c), color(co) {};
 
 };
 
