@@ -21,14 +21,14 @@ std::array<std::array<uint8_t, Camera::WIDTH*3>, Camera::HEIGHT> Camera::RayTrac
 
             uint32_t sphereColor = currentSphere->color;
 
-            float lightPercentage{0.5f};
+            float lightPercentage{0.3f};
 
             for (const Light &l : lights) {
                 //lighting calculation
                 Vector3 intersectionPoint = ray.origin + (intersectValue.second * ray.direction);
                 //normal vector of the tangent plane of the point on the sphere
-                Vector3 normalVector = intersectionPoint - currentSphere->center;
-                Vector3 lightVector = l.position - intersectionPoint;
+                Vector3 normalVector = normalize(intersectionPoint - currentSphere->center);
+                Vector3 lightVector = normalize(l.position - intersectionPoint);
 
                 lightPercentage += currentSphere->diffuseCoefficient * l.intensity *
                     std::max(0.0f, dot(normalVector, lightVector));
