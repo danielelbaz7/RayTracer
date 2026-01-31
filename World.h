@@ -17,7 +17,7 @@ public:
 
     void AddLight(const Light &l);
 
-    World() : camera(spheres) {};
+    World() : camera(spheres, lights) {};
     Camera camera;
 
 private:

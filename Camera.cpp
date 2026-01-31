@@ -4,6 +4,8 @@
 
 #include "Camera.h"
 
+#include <iostream>
+
 std::array<std::array<uint8_t, Camera::WIDTH*3>, Camera::HEIGHT> Camera::RayTrace() {
     for (int i = 0; i < cv.WIDTH*cv.HEIGHT; i++) {
         //returns a ray in the form of P + tD
@@ -17,18 +19,23 @@ std::array<std::array<uint8_t, Camera::WIDTH*3>, Camera::HEIGHT> Camera::RayTrac
                 continue;
             }
 
-            const uint32_t sphereColor = currentSphere->color;
+            uint32_t sphereColor = currentSphere->color;
 
+            float lightPercentage{0.5f};
 
             for (const Light &l : lights) {
                 //lighting calculation
                 Vector3 intersectionPoint = ray.origin + (intersectValue.second * ray.direction);
                 //normal vector of the tangent plane of the point on the sphere
                 Vector3 normalVector = intersectionPoint - currentSphere->center;
+                Vector3 lightVector = l.position - intersectionPoint;
 
+                lightPercentage += currentSphere->diffuseCoefficient * l.intensity *
+                    std::max(0.0f, dot(normalVector, lightVector));
             }
 
-            float lightPercentage = currentSphere->diffuseCoefficient *
+            sphereColor *= lightPercentage;
+
 
             frameBuffer[i/cv.WIDTH][i%cv.HEIGHT*3] = (sphereColor & 0xFF0000) >> 16u;
             frameBuffer[i/cv.WIDTH][i%cv.HEIGHT*3 + 1] = (sphereColor & 0x00FF00) >> 8u;
