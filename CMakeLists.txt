@@ -10,4 +10,5 @@ add_executable(RayTracer main.cpp
         World.cpp
         World.h
         Vector3.h
-        Ray.h)
+        Ray.h
+        Light.h)

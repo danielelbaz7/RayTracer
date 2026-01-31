@@ -7,3 +7,7 @@
 void World::AddSphere(const Sphere &s) {
     spheres.push_back(s);
 }
+
+void World::AddLight(const Light &l) {
+    lights.push_back(l);
+}

@@ -25,6 +25,11 @@ inline Vector3 operator*(float b, const Vector3& a) {
     return {a.x * b, a.y * b, a.z * b};
 }
 
+
+inline Vector3 operator*(float b, const Vector3& a) {
+    return {a.x * b, a.y * b, a.z * b};
+}
+
 inline float dot(const Vector3& a, const Vector3& b) {
     return a.x * b.x + a.y * b.y + a.z * b.z;
 }

@@ -10,17 +10,19 @@
 #include "Vector3.h"
 #include "Sphere.h"
 #include "Ray.h"
+#include "Light.h"
 
 
 class Camera {
 private:
     const std::vector<Sphere> &spheres;
+    const std::vector<Light> &lights;
     static constexpr float PIXEL_DISTANCE{0.05};
     static constexpr int WIDTH{256};
     static constexpr int HEIGHT{256};
 
 public:
-    Camera(const std::vector<Sphere> &spheresVec) : spheres(spheresVec) {}
+    Camera(const std::vector<Sphere> &spheresVec, const std::vector<Light> &lightVec) : spheres(spheresVec), lights(lightVec) {}
     std::array<std::array<uint8_t, WIDTH*3>, HEIGHT> RayTrace();
 
 
@@ -31,7 +33,7 @@ private:
         {0,0,0},
         {1,0,0}, {0,1,0}, {0,0,1}, WIDTH, HEIGHT, PIXEL_DISTANCE};
 
-    //this will create and return a ray based on how far we are inot the array
+    //this will create and return a ray based on how far we are in the array
     Ray MakeRay(int xi, int yi) {
         return Ray(this->cv, xi, yi);
     }

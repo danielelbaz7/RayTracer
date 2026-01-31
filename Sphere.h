@@ -13,6 +13,8 @@ struct Sphere {
     Vector3 center;
 
     uint32_t color{};
+    float diffuseCoefficient{1};
+
 
     //max distance dictates the max size of the ray, lower is the initial
     std::pair<bool, float> Intersects(const Ray &ray, int lowerDistance, int maxDistance) const {

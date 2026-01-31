@@ -8,16 +8,21 @@
 
 #include "Sphere.h"
 #include "Camera.h"
+#include "Light.h"
 
 
 class World {
 public:
     void AddSphere(const Sphere &s);
+
+    void AddLight(const Light &l);
+
     World() : camera(spheres) {};
     Camera camera;
 
 private:
     std::vector<Sphere> spheres{};
+    std::vector<Light> lights{};
 };
 
 
