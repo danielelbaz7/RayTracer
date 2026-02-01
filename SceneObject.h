@@ -47,6 +47,9 @@ struct Sphere : SceneObject {
 
 struct Plane : SceneObject {
     Vector3 normalVector{0,1,0};
+    Vector3 rightVector{1,0,0};
+    Vector3 upVector{0,0,1};
+
     float length{};
     float width{};
 
@@ -54,16 +57,27 @@ struct Plane : SceneObject {
         //P is a possible point on the plane, P0 is a point already on the plane
         //formula = n dot (P0 - O) / n dot D
         //center is P0, origin of plane
+
+
         float numerator = dot(normalVector, center - ray.origin);
         float denominator = dot(normalVector, ray.direction);
         if (denominator == 0) {
             return {false, -1};
         }
-        return {true, numerator/denominator};
+
+        float t = numerator/denominator;
+        return {true, t};
     }
 
     Plane(const Vector3 &n, const Vector3 &c, uint32_t co, float dif, float spec, float length, float width)
-        : SceneObject(c, co, dif, spec), normalVector(n), length(length), width(width) {};
+        : SceneObject(c, co, dif, spec), normalVector(normalize(n)), length(length), width(width) {
+
+        //0.99f is arbitrary, just means we aren't close to vertical. just checking to make sure it is less than 1
+        Vector3 randomNonOrtho = (std::abs(normalVector.y) < 0.99f) ? Vector3{0, 1, 0} : Vector3{1, 0, 0};
+        //cross of random non ortho will lie on plane, cross of that and normal will also lie on plane
+        rightVector = normalize(cross(normalVector, randomNonOrtho));
+        upVector = normalize(cross(normalVector, rightVector));
+    };
 };
 
 
