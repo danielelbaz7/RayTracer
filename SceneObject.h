@@ -66,6 +66,13 @@ struct Plane : SceneObject {
         }
 
         float t = numerator/denominator;
+        Vector3 pointOnPlane = {ray.origin + t * ray.direction};
+
+        if (abs(dot(pointOnPlane-center, upVector)) > length
+            || abs(dot(pointOnPlane-center, rightVector)) > width) {
+            return {false, -1};
+        }
+
         return {true, t};
     }
 
