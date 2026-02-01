@@ -17,7 +17,7 @@ class Camera {
 private:
     const std::vector<Sphere> &spheres;
     const std::vector<Light> &lights;
-    static constexpr float PIXEL_DISTANCE{0.02};
+    static constexpr float PIXEL_DISTANCE{0.03};
     static constexpr int WIDTH{512};
     static constexpr int HEIGHT{512};
 
