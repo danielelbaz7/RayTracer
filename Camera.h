@@ -8,21 +8,21 @@
 
 #include <vector>
 #include "Vector3.h"
-#include "Sphere.h"
+#include "SceneObject.h"
 #include "Ray.h"
 #include "Light.h"
 
 
 class Camera {
 private:
-    const std::vector<Sphere> &spheres;
+    const std::vector<std::unique_ptr<SceneObject>> &sceneObjects;
     const std::vector<Light> &lights;
     static constexpr float PIXEL_DISTANCE{0.03};
     static constexpr int WIDTH{512};
     static constexpr int HEIGHT{512};
 
 public:
-    Camera(const std::vector<Sphere> &spheresVec, const std::vector<Light> &lightVec) : spheres(spheresVec), lights(lightVec) {}
+    Camera(const std::vector<std::unique_ptr<SceneObject>> &sceneObjectsVec, const std::vector<Light> &lightVec) : sceneObjects(sceneObjectsVec), lights(lightVec) {}
     std::array<std::array<uint8_t, WIDTH*3>, HEIGHT> RayTrace();
 
 

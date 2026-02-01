@@ -6,22 +6,22 @@
 #define RAYTRACER_WORLD_H
 #include <vector>
 
-#include "Sphere.h"
+#include "SceneObject.h"
 #include "Camera.h"
 #include "Light.h"
 
 
 class World {
 public:
-    void AddSphere(const Sphere &s);
+    void AddSceneObject(std::unique_ptr<SceneObject> s);
 
     void AddLight(const Light &l);
 
-    World() : camera(spheres, lights) {};
+    World() : camera(sceneObjects, lights) {};
     Camera camera;
 
 private:
-    std::vector<Sphere> spheres{};
+    std::vector<std::unique_ptr<SceneObject>> sceneObjects{};
     std::vector<Light> lights{};
 };
 

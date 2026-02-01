@@ -4,8 +4,8 @@
 
 #include "World.h"
 
-void World::AddSphere(const Sphere &s) {
-    spheres.push_back(s);
+void World::AddSceneObject(std::unique_ptr<SceneObject> s) {
+    sceneObjects.push_back(std::move(s));
 }
 
 void World::AddLight(const Light &l) {

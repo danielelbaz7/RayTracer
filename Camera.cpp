@@ -13,27 +13,27 @@ std::array<std::array<uint8_t, Camera::WIDTH*3>, Camera::HEIGHT> Camera::RayTrac
         Ray ray = this->MakeRay(i % cv.HEIGHT, i / cv.WIDTH);
 
         float smallest_t = INFINITY;
-        const Sphere *currentSphere = nullptr;
+        const SceneObject *currentSceneObject = nullptr;
 
-        for (int j = 0; j < spheres.size(); j++) {
+        for (int j = 0; j < sceneObjects.size(); j++) {
             //first stores whether we intersect, second stores the t value
-            const Sphere *tempSphere = &spheres[j];
-            std::pair<bool, float> intersectValue = tempSphere->Intersects(ray, 0, INFINITY);
+            const auto* tempSceneObject = sceneObjects[j].get();
+            std::pair<bool, float> intersectValue = tempSceneObject->Intersects(ray, 0, INFINITY);
             if (intersectValue.first == false) {
                 continue;
             }
             if (intersectValue.second >= 0  && intersectValue.second < smallest_t) {
-                currentSphere = tempSphere;
+                currentSceneObject = tempSceneObject;
                 smallest_t = intersectValue.second;
             }
         }
 
         //if we didn't hit, next pixel
-        if (!currentSphere) {
+        if (!currentSceneObject) {
             continue;
         }
 
-        uint32_t sphereColor = currentSphere->color;
+        uint32_t sceneObjectColor = currentSceneObject->color;
 
         float lightPercentage{0.3f};
 
@@ -41,21 +41,21 @@ std::array<std::array<uint8_t, Camera::WIDTH*3>, Camera::HEIGHT> Camera::RayTrac
             //lighting calculation
             Vector3 intersectionPoint = ray.origin + (smallest_t * ray.direction);
             //normal vector of the tangent plane of the point on the sphere
-            Vector3 normalVector = normalize(intersectionPoint - currentSphere->center);
+            Vector3 normalVector = normalize(intersectionPoint - currentSceneObject->center);
             Vector3 lightVector = normalize(l.position - intersectionPoint);
 
-            lightPercentage += currentSphere->diffuseCoefficient * l.intensity *
+            lightPercentage += currentSceneObject->diffuseCoefficient * l.intensity *
                 std::max(0.0f, dot(normalVector, lightVector));
         }
 
         lightPercentage = std::clamp(lightPercentage, 0.0f, 1.0f);
 
 
-        frameBuffer[i/cv.WIDTH][i%cv.HEIGHT*3] = ((sphereColor & 0xFF0000) >> 16u)
+        frameBuffer[i/cv.WIDTH][i%cv.HEIGHT*3] = ((sceneObjectColor & 0xFF0000) >> 16u)
             * lightPercentage;
-        frameBuffer[i/cv.WIDTH][i%cv.HEIGHT*3 + 1] = ((sphereColor & 0x00FF00) >> 8u)
+        frameBuffer[i/cv.WIDTH][i%cv.HEIGHT*3 + 1] = ((sceneObjectColor & 0x00FF00) >> 8u)
             * lightPercentage;
-        frameBuffer[i/cv.WIDTH][i%cv.HEIGHT*3 + 2] = ((sphereColor & 0x0000FF))
+        frameBuffer[i/cv.WIDTH][i%cv.HEIGHT*3 + 2] = ((sceneObjectColor & 0x0000FF))
             * lightPercentage;
     }
     return frameBuffer;
