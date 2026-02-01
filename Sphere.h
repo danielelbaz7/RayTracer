@@ -14,6 +14,7 @@ struct Sphere {
 
     uint32_t color{};
     float diffuseCoefficient{1};
+    float specularCoefficient{0.5f};
 
 
     //max distance dictates the max size of the ray, lower is the initial

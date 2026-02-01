@@ -22,7 +22,7 @@ std::array<std::array<uint8_t, Camera::WIDTH*3>, Camera::HEIGHT> Camera::RayTrac
             if (intersectValue.first == false) {
                 continue;
             }
-            if (intersectValue.second < smallest_t) {
+            if (intersectValue.second >= 0  && intersectValue.second < smallest_t) {
                 currentSphere = tempSphere;
                 smallest_t = intersectValue.second;
             }
@@ -46,14 +46,17 @@ std::array<std::array<uint8_t, Camera::WIDTH*3>, Camera::HEIGHT> Camera::RayTrac
 
             lightPercentage += currentSphere->diffuseCoefficient * l.intensity *
                 std::max(0.0f, dot(normalVector, lightVector));
+        }
+
+        lightPercentage = std::clamp(lightPercentage, 0.0f, 1.0f);
+
 
         frameBuffer[i/cv.WIDTH][i%cv.HEIGHT*3] = ((sphereColor & 0xFF0000) >> 16u)
-            * std::clamp(lightPercentage, 0.0f, 1.0f);
+            * lightPercentage;
         frameBuffer[i/cv.WIDTH][i%cv.HEIGHT*3 + 1] = ((sphereColor & 0x00FF00) >> 8u)
-            * std::clamp(lightPercentage, 0.0f, 1.0f);
+            * lightPercentage;
         frameBuffer[i/cv.WIDTH][i%cv.HEIGHT*3 + 2] = ((sphereColor & 0x0000FF))
-            * std::clamp(lightPercentage, 0.0f, 1.0f);
-        }
+            * lightPercentage;
     }
     return frameBuffer;
 }

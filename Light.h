@@ -8,9 +8,9 @@
 
 struct Light {
     Vector3 position{};
-    float intensity{1};
+    float intensity{};
 
-    Light(const Vector3 pos) : position(pos) {};
+    Light(const Vector3 pos, float intensity) : position(pos), intensity(intensity) {};
 };
 
 #endif //RAYTRACER_LIGHT_H
