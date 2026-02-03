@@ -35,18 +35,18 @@ std::array<std::array<uint8_t, Camera::WIDTH*3>, Camera::HEIGHT> Camera::RayTrac
 
         uint32_t sceneObjectColor = currentSceneObject->color;
 
-        float lightPercentage{0.3f};
-
-        for (const Light &l : lights) {
-            //lighting calculation
-            Vector3 intersectionPoint = ray.origin + (smallest_t * ray.direction);
-            //normal vector of the tangent plane of the point on the sphere
-            Vector3 normalVector = normalize(intersectionPoint - currentSceneObject->center);
-            Vector3 lightVector = normalize(l.position - intersectionPoint);
-
-            lightPercentage += currentSceneObject->diffuseCoefficient * l.intensity *
-                std::max(0.0f, dot(normalVector, lightVector));
-        }
+        float lightPercentage{1.0f};
+        //
+        // for (const Light &l : lights) {
+        //     //lighting calculation
+        //     Vector3 intersectionPoint = ray.origin + (smallest_t * ray.direction);
+        //     //normal vector of the tangent plane of the point on the sphere
+        //     Vector3 normalVector = normalize(intersectionPoint - currentSceneObject->center);
+        //     Vector3 lightVector = normalize(l.position - intersectionPoint);
+        //
+        //     lightPercentage += currentSceneObject->diffuseCoefficient * l.intensity *
+        //         std::max(0.0f, dot(normalVector, lightVector));
+        // }
 
         lightPercentage = std::clamp(lightPercentage, 0.0f, 1.0f);
 

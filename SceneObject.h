@@ -31,12 +31,12 @@ struct Sphere : SceneObject {
     std::pair<bool, float> Intersects(const Ray &ray, float lowerDistance, float maxDistance) const {
         //calculate the discriminate and see if it can even be square rooted
         float dDotP = dot(ray.direction, ray.origin - this->center);
-        float discriminate = dDotP * dDotP - dot(ray.origin - this->center, ray.origin - this->center) + (radius*radius);
-        if (discriminate < 0) {
+        float discriminant = dDotP * dDotP - dot(ray.origin - this->center, ray.origin - this->center) + (radius*radius);
+        if (discriminant < 0) {
             return {false, -1};
         }
 
-        float sqrtDisc = sqrt(discriminate);
+        float sqrtDisc = sqrt(discriminant);
         float smallestT = std::min(-dDotP + sqrtDisc, -dDotP - sqrtDisc);
         return {true, smallestT};
     }
