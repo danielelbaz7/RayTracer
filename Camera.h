@@ -26,12 +26,14 @@ public:
     std::array<std::array<uint8_t, WIDTH*3>, HEIGHT> RayTrace();
 
 
+    cameraValues cv{
+            {0,0,-10},
+            {1,0,0}, {0,1,0}, {0,0,1}, WIDTH, HEIGHT, PIXEL_DISTANCE};
+
+
+
 private:
     std::array<std::array<uint8_t, WIDTH*3>, HEIGHT> frameBuffer{};
-
-    cameraValues cv{
-        {0,0,-10},
-        {1,0,0}, {0,1,0}, {0,0,1}, WIDTH, HEIGHT, PIXEL_DISTANCE};
 
     //this will create and return a ray based on how far we are in the array
     Ray MakeRay(int xi, int yi) {

@@ -30,6 +30,9 @@ std::array<std::array<uint8_t, Camera::WIDTH*3>, Camera::HEIGHT> Camera::RayTrac
 
         //if we didn't hit, next pixel
         if (!currentSceneObject) {
+            frameBuffer[i/cv.WIDTH][i%cv.HEIGHT*3] = 0;
+            frameBuffer[i/cv.WIDTH][i%cv.HEIGHT*3 + 1] = 0;
+            frameBuffer[i/cv.WIDTH][i%cv.HEIGHT*3 + 2] = 0;
             continue;
         }
 
