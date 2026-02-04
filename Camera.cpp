@@ -35,18 +35,32 @@ std::array<std::array<uint8_t, Camera::WIDTH*3>, Camera::HEIGHT> Camera::RayTrac
 
         uint32_t sceneObjectColor = currentSceneObject->color;
 
-        float lightPercentage{1.0f};
-        //
-        // for (const Light &l : lights) {
-        //     //lighting calculation
-        //     Vector3 intersectionPoint = ray.origin + (smallest_t * ray.direction);
-        //     //normal vector of the tangent plane of the point on the sphere
-        //     Vector3 normalVector = normalize(intersectionPoint - currentSceneObject->center);
-        //     Vector3 lightVector = normalize(l.position - intersectionPoint);
-        //
-        //     lightPercentage += currentSceneObject->diffuseCoefficient * l.intensity *
-        //         std::max(0.0f, dot(normalVector, lightVector));
-        // }
+        //ambient
+        float lightPercentage{0.3f};
+
+        for (const Light &l : lights) {
+            //diffuse lighting calculation
+            Vector3 intersectionPoint = ray.origin + (smallest_t * ray.direction);
+            //normal vector of the tangent plane of the point on the sphere
+            Vector3 normalVector = normalize(intersectionPoint - currentSceneObject->center);
+            Vector3 lightVector = l.position - intersectionPoint;
+
+            float lightDistanceSquared = std::max(dot(lightVector, lightVector), 0.001f);
+
+            lightVector = normalize(lightVector);
+
+            lightPercentage += currentSceneObject->diffuseCoefficient * (l.intensity/lightDistanceSquared) *
+                std::max(0.0f, dot(normalVector, lightVector));
+
+            //specular (phong)
+            Vector3 reflectionVector = normalize((2*dot(normalVector, lightVector))*normalVector - lightVector);
+            Vector3 eyeVector = normalize(ray.origin - intersectionPoint);
+
+            float specularLight = currentSceneObject->specularCoefficient * (l.intensity/lightDistanceSquared) *
+                std::pow(std::max(0.0f, dot(eyeVector, reflectionVector)), currentSceneObject->shininess);
+
+            lightPercentage += specularLight;
+        }
 
         lightPercentage = std::clamp(lightPercentage, 0.0f, 1.0f);
 
