@@ -8,19 +8,21 @@
 
 #include <vector>
 #include "Vector3.h"
-#include "Sphere.h"
+#include "SceneObject.h"
 #include "Ray.h"
+#include "Light.h"
 
 
 class Camera {
 private:
-    const std::vector<Sphere> &spheres;
-    static constexpr float PIXEL_DISTANCE{0.05};
-    static constexpr int WIDTH{256};
-    static constexpr int HEIGHT{256};
+    const std::vector<std::unique_ptr<SceneObject>> &sceneObjects;
+    const std::vector<Light> &lights;
+    static constexpr float PIXEL_DISTANCE{0.03};
+    static constexpr int WIDTH{512};
+    static constexpr int HEIGHT{512};
 
 public:
-    Camera(const std::vector<Sphere> &spheresVec) : spheres(spheresVec) {}
+    Camera(const std::vector<std::unique_ptr<SceneObject>> &sceneObjectsVec, const std::vector<Light> &lightVec) : sceneObjects(sceneObjectsVec), lights(lightVec) {}
     std::array<std::array<uint8_t, WIDTH*3>, HEIGHT> RayTrace();
 
 
@@ -28,10 +30,10 @@ private:
     std::array<std::array<uint8_t, WIDTH*3>, HEIGHT> frameBuffer{};
 
     cameraValues cv{
-        {0,0,0},
+        {0,0,-10},
         {1,0,0}, {0,1,0}, {0,0,1}, WIDTH, HEIGHT, PIXEL_DISTANCE};
 
-    //this will create and return a ray based on how far we are inot the array
+    //this will create and return a ray based on how far we are in the array
     Ray MakeRay(int xi, int yi) {
         return Ray(this->cv, xi, yi);
     }
