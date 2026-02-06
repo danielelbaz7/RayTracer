@@ -159,27 +159,30 @@ int main()
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
     World world{};
 
+    // Light: up and a bit left/front
     world.AddLight(Light(
-    Vector3{ 0.0f, 5.0f, 4.0f }, // above + slightly in front
-    20.0f                      // intensity (important!)
-));
-
-    world.AddSceneObject(std::make_unique<Sphere>(
-    1.5f,                     // radius
-    Vector3{ -2.0f, 0.0f, 7.0f }, // center (left sphere)
-    0x0F35FF,                 // blue
-    0.9f,                     // diffuse coefficient
-    0.3f,                     // specular coefficient
-    32.0f                     // shininess (wide highlight)
+        Vector3{ 0.0f, 5.0f, 2.0f },  // position
+        20.0f                          // intensity
     ));
 
+    // Sphere A (blocker): closer to the light, centered on the line to B
     world.AddSceneObject(std::make_unique<Sphere>(
-        1.5f,                     // radius
-        Vector3{ 2.0f, 0.0f, 7.0f },  // center (right sphere)
-        0xFF007F,                 // pink
-        0.1f,                     // diffuse coefficient
-        0.6f,                     // specular coefficient
-        32.0f                    // shininess (tight highlight)
+        3.0f,
+        Vector3{ 0.0f, 1.5f, 6.0f },   // A is in front
+        0x0F35FF,
+        0.9f,
+        0.2f,
+        32.0f
+    ));
+
+    // Sphere B (receiver): farther back, same x/y so A shadows it
+    world.AddSceneObject(std::make_unique<Sphere>(
+        1.0f,
+        Vector3{ 0.0f, 4.5f, 3.0f },   // B is behind A
+        0xFF007F,
+        0.7f,
+        0.4f,
+        64.0f
     ));
 
     // Create the image (RGB Array) to be displayed

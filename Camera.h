@@ -25,6 +25,9 @@ public:
     Camera(const std::vector<std::unique_ptr<SceneObject>> &sceneObjectsVec, const std::vector<Light> &lightVec) : sceneObjects(sceneObjectsVec), lights(lightVec) {}
     std::array<std::array<uint8_t, WIDTH*3>, HEIGHT> RayTrace();
 
+    void AddLight(Vector3 intersectionPoint, const SceneObject *currentSceneObject, const Light &l, const Ray &ray,
+                  float &lightPercentage);
+
 
     cameraValues cv{
             {0,0,-10},

@@ -10,7 +10,7 @@
 std::array<std::array<uint8_t, Camera::WIDTH*3>, Camera::HEIGHT> Camera::RayTrace() {
     for (int i = 0; i < cv.WIDTH*cv.HEIGHT; i++) {
         //returns a ray in the form of P + tD
-        Ray ray = this->MakeRay(i % cv.HEIGHT, i / cv.WIDTH);
+        Ray ray = this->MakeRay(i % cv.WIDTH, i / cv.WIDTH);
 
         float smallest_t = INFINITY;
         const SceneObject *currentSceneObject = nullptr;
@@ -18,7 +18,7 @@ std::array<std::array<uint8_t, Camera::WIDTH*3>, Camera::HEIGHT> Camera::RayTrac
         for (int j = 0; j < sceneObjects.size(); j++) {
             //first stores whether we intersect, second stores the t value
             const auto* tempSceneObject = sceneObjects[j].get();
-            std::pair<bool, float> intersectValue = tempSceneObject->Intersects(ray, 0, INFINITY);
+            std::pair<bool, float> intersectValue = tempSceneObject->Intersects(ray, 0.001f, INFINITY);
             if (intersectValue.first == false) {
                 continue;
             }
@@ -44,25 +44,36 @@ std::array<std::array<uint8_t, Camera::WIDTH*3>, Camera::HEIGHT> Camera::RayTrac
         for (const Light &l : lights) {
             //diffuse lighting calculation
             Vector3 intersectionPoint = ray.origin + (smallest_t * ray.direction);
-            //normal vector of the tangent plane of the point on the sphere
-            Vector3 normalVector = normalize(intersectionPoint - currentSceneObject->center);
-            Vector3 lightVector = l.position - intersectionPoint;
 
-            float lightDistanceSquared = std::max(dot(lightVector, lightVector), 0.001f);
+            //direction vector going from the light source to the point of intersection
+            Vector3 lightToIntersect = (l.position - intersectionPoint);
+            Vector3 lightToIntersectNormalized = normalize(lightToIntersect);
+            //ray made from this vector
+            Ray lightToIntersectRay{intersectionPoint, lightToIntersectNormalized};
 
-            lightVector = normalize(lightVector);
+            bool lightBlocked = false;
 
-            lightPercentage += currentSceneObject->diffuseCoefficient * (l.intensity/lightDistanceSquared) *
-                std::max(0.0f, dot(normalVector, lightVector));
+            //check to see if we hit any objects
+            for (int j = 0; j < sceneObjects.size(); j++) {
 
-            //specular (phong)
-            Vector3 reflectionVector = normalize((2*dot(normalVector, lightVector))*normalVector - lightVector);
-            Vector3 eyeVector = normalize(ray.origin - intersectionPoint);
+                //first stores whether we intersect, second stores the t value
+                const auto* tempSceneObject = sceneObjects[j].get();
 
-            float specularLight = currentSceneObject->specularCoefficient * (l.intensity/lightDistanceSquared) *
-                std::pow(std::max(0.0f, dot(eyeVector, reflectionVector)), currentSceneObject->shininess);
+                if (tempSceneObject == currentSceneObject) {
+                    continue;
+                }
 
-            lightPercentage += specularLight;
+                if (tempSceneObject->Intersects(lightToIntersectRay, 0.0f, lightToIntersect.length()).first) {
+                    lightBlocked = true;
+                    break;
+                }
+
+            }
+
+            if (!lightBlocked) {
+                AddLight(intersectionPoint, currentSceneObject, l, ray, lightPercentage);
+            }
+
         }
 
         lightPercentage = std::clamp(lightPercentage, 0.0f, 1.0f);
@@ -76,4 +87,26 @@ std::array<std::array<uint8_t, Camera::WIDTH*3>, Camera::HEIGHT> Camera::RayTrac
             * lightPercentage;
     }
     return frameBuffer;
+}
+
+void Camera::AddLight(const Vector3 intersectionPoint, const SceneObject *currentSceneObject, const Light &l, const Ray &ray, float &lightPercentage) {
+    //normal vector of the tangent plane of the point on the sphere
+    Vector3 normalVector = normalize(intersectionPoint - currentSceneObject->center);
+    Vector3 lightVector = l.position - intersectionPoint;
+
+    float lightDistanceSquared = std::max(dot(lightVector, lightVector), 0.001f);
+
+    lightVector = normalize(lightVector);
+
+    lightPercentage += currentSceneObject->diffuseCoefficient * (l.intensity/lightDistanceSquared) *
+        std::max(0.0f, dot(normalVector, lightVector));
+
+    //specular (phong)
+    Vector3 reflectionVector = normalize((2*dot(normalVector, lightVector))*normalVector - lightVector);
+    Vector3 eyeVector = normalize(ray.origin - intersectionPoint);
+
+    float specularLight = currentSceneObject->specularCoefficient * (l.intensity/lightDistanceSquared) *
+        std::pow(std::max(0.0f, dot(eyeVector, reflectionVector)), currentSceneObject->shininess);
+
+    lightPercentage += specularLight;
 }
