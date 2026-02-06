@@ -63,7 +63,7 @@ std::array<std::array<uint8_t, Camera::WIDTH*3>, Camera::HEIGHT> Camera::RayTrac
                     continue;
                 }
 
-                if (tempSceneObject->Intersects(lightToIntersectRay, 0.0f, lightToIntersect.length()).first) {
+                if (tempSceneObject->Intersects(lightToIntersectRay, 0.0f, length(lightToIntersect)).first) {
                     lightBlocked = true;
                     break;
                 }

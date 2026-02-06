@@ -161,14 +161,18 @@ int main()
 
     // Light: up and a bit left/front
     world.AddLight(Light(
-        Vector3{ 0.0f, 5.0f, 2.0f },  // position
+        Vector3{ 0.0f, 5.0f, -1.0f },  // position
         20.0f                          // intensity
     ));
 
+    world.AddLight(Light(
+        Vector3{ -4.0f, 10.0f, 3.0f },  // position
+        20.0f                          // intensity
+        ));
     // Sphere A (blocker): closer to the light, centered on the line to B
     world.AddSceneObject(std::make_unique<Sphere>(
         3.0f,
-        Vector3{ 0.0f, 1.5f, 6.0f },   // A is in front
+        Vector3{ 0.0f, 0.0f, 6.0f },   // A is in front
         0x0F35FF,
         0.9f,
         0.2f,
@@ -184,6 +188,20 @@ int main()
         0.4f,
         64.0f
     ));
+
+
+    world.AddSceneObject(std::make_unique<Plane>(
+            Vector3{ 0.0f, -5.5f, 0.0f },                 // point on plane
+            normalize(Vector3{ 0.0f, 1.0, -0.3f }),     // slightly tilted normal
+            // spec
+            8.0f,
+            8.0f,
+            0xFFFFFF,                                     // dark gray
+            0.9f, //diffuse
+            0.0f,                                        // specular (matte)
+            1.0f                                         // shininess
+    ));
+
 
     // Create the image (RGB Array) to be displayed
     const int width  = 512; // keep it in powers of 2!

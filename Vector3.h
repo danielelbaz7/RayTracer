@@ -3,10 +3,6 @@
 
 struct Vector3 {
     float x{}, y{}, z{};
-
-    float length() {
-        return std::sqrt((this->x * this->x) + (this->y * this->y) + (this->z * this->z));
-    };
 };
 
 inline Vector3 operator+(const Vector3& a, const Vector3& b) {
@@ -50,5 +46,8 @@ inline Vector3 normalize(const Vector3& a) {
     return a / magnitude;
 }
 
+inline float length(const Vector3 &a) {
+    return std::sqrt((a.x * a.x) + (a.y * a.y) + (a.z * a.z));
+};
 
 #endif // RAYTRACER_VECTOR3_H

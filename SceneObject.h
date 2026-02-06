@@ -17,8 +17,8 @@ struct SceneObject {
     float specularCoefficient{0.5f};
     int shininess{100};
 
-    SceneObject(const Vector3 &c, uint32_t co, float dif, float spec, int shiny)
-        : center(c), color(co), diffuseCoefficient(dif), specularCoefficient(spec), shininess(shiny) {};
+    SceneObject(const Vector3 &center, uint32_t color, float dif, float spec, int shiny)
+        : center(center), color(color), diffuseCoefficient(dif), specularCoefficient(spec), shininess(shiny) {};
 
     virtual ~SceneObject() = default;
     virtual std::pair<bool, float> Intersects(const Ray& ray, float lowerDistance, float maxDistance) const = 0;
@@ -76,7 +76,7 @@ struct Plane : SceneObject {
         return {true, t};
     }
 
-    Plane(const Vector3 &n, const Vector3 &c, uint32_t co, float dif, float spec, float length, float width, int shiny)
+    Plane(const Vector3 &c, const Vector3 &n, float length, float width, uint32_t co, float dif, float spec, int shiny)
         : SceneObject(c, co, dif, spec, shiny), normalVector(normalize(n)), length(length), width(width) {
 
         //0.99f is arbitrary, just means we aren't close to vertical. just checking to make sure it is less than 1
