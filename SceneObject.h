@@ -22,6 +22,7 @@ struct SceneObject {
 
     virtual ~SceneObject() = default;
     virtual std::pair<bool, float> Intersects(const Ray& ray, float lowerDistance, float maxDistance) const = 0;
+    virtual Vector3 GetNormal(const Vector3 &point) const = 0;
 };
 
 
@@ -29,7 +30,7 @@ struct Sphere : SceneObject {
     double radius{};
 
     //max distance dictates the max size of the ray, lower is the initial
-    std::pair<bool, float> Intersects(const Ray &ray, float lowerDistance, float maxDistance) const {
+    std::pair<bool, float> Intersects(const Ray &ray, float lowerDistance, float maxDistance) const override {
         //calculate the discriminate and see if it can even be square rooted
         float dDotP = dot(ray.direction, ray.origin - this->center);
         float discriminant = dDotP * dDotP - dot(ray.origin - this->center, ray.origin - this->center) + (radius*radius);
@@ -40,6 +41,10 @@ struct Sphere : SceneObject {
         float sqrtDisc = sqrt(discriminant);
         float smallestT = std::min(-dDotP + sqrtDisc, -dDotP - sqrtDisc);
         return {true, smallestT};
+    }
+
+    Vector3 GetNormal(const Vector3 &point) const override {
+        return point - this->center;
     }
 
     Sphere(double r, const Vector3 &c, uint32_t co, float dif, float spec, int shiny) : SceneObject(c, co, dif, spec, shiny), radius(r) {};
@@ -54,7 +59,7 @@ struct Plane : SceneObject {
     float length{};
     float width{};
 
-    std::pair<bool, float> Intersects(const Ray &ray, float lowerDistance, float maxDistance) const {
+    std::pair<bool, float> Intersects(const Ray &ray, float lowerDistance, float maxDistance) const override {
         //P is a possible point on the plane, P0 is a point already on the plane
         //formula = n dot (P0 - O) / n dot D
         //center is P0, origin of plane
@@ -74,6 +79,10 @@ struct Plane : SceneObject {
         }
 
         return {true, t};
+    }
+
+    Vector3 GetNormal(const Vector3 &point) const override {
+        return normalVector;
     }
 
     Plane(const Vector3 &c, const Vector3 &n, float length, float width, uint32_t co, float dif, float spec, int shiny)

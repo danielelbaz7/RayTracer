@@ -161,32 +161,23 @@ int main()
 
     // Light: up and a bit left/front
     world.AddLight(Light(
-        Vector3{ 0.0f, 5.0f, -1.0f },  // position
+        Vector3{ 0.0f, 5.0f, -5.0f },  // position
         20.0f                          // intensity
     ));
 
     world.AddLight(Light(
-        Vector3{ -4.0f, 10.0f, 3.0f },  // position
-        20.0f                          // intensity
-        ));
+        Vector3{ -3.0f, 5.0f, -5.0f },  // position
+        50.0f                          // intensity
+    ));
+
     // Sphere A (blocker): closer to the light, centered on the line to B
     world.AddSceneObject(std::make_unique<Sphere>(
-        3.0f,
-        Vector3{ 0.0f, 0.0f, 6.0f },   // A is in front
+        1.0f,
+        Vector3{ -2.0f, -2.0f, 6.0f },   // A is in front
         0x0F35FF,
         0.9f,
         0.2f,
         32.0f
-    ));
-
-    // Sphere B (receiver): farther back, same x/y so A shadows it
-    world.AddSceneObject(std::make_unique<Sphere>(
-        1.0f,
-        Vector3{ 0.0f, 4.5f, 3.0f },   // B is behind A
-        0xFF007F,
-        0.7f,
-        0.4f,
-        64.0f
     ));
 
 
@@ -194,7 +185,7 @@ int main()
             Vector3{ 0.0f, -5.5f, 0.0f },                 // point on plane
             normalize(Vector3{ 0.0f, 1.0, -0.3f }),     // slightly tilted normal
             // spec
-            8.0f,
+            12.0f,
             8.0f,
             0xFFFFFF,                                     // dark gray
             0.9f, //diffuse
