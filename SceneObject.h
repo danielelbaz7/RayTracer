@@ -52,9 +52,9 @@ struct Sphere : SceneObject {
 };
 
 struct Plane : SceneObject {
-    Vector3 normalVector{0,1,0};
+    Vector3 normalVector{0,0,1};
     Vector3 rightVector{1,0,0};
-    Vector3 upVector{0,0,1};
+    Vector3 upVector{0,1,0};
 
     float length{};
     float width{};
@@ -89,7 +89,7 @@ struct Plane : SceneObject {
         : SceneObject(c, co, dif, spec, shiny), normalVector(normalize(n)), length(length), width(width) {
 
         //0.99f is arbitrary, just means we aren't close to vertical. just checking to make sure it is less than 1
-        Vector3 randomNonOrtho = (std::abs(normalVector.y) < 0.99f) ? Vector3{0, 1, 0} : Vector3{1, 0, 0};
+        Vector3 randomNonOrtho = (std::abs(normalVector.z) < 0.99f) ? Vector3{0, 0, 1} : Vector3{1, 0, 0};
         //cross of random non ortho will lie on plane, cross of that and normal will also lie on plane
         rightVector = normalize(cross(normalVector, randomNonOrtho));
         upVector = normalize(cross(normalVector, rightVector));

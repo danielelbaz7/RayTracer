@@ -30,8 +30,8 @@ public:
 
 
     cameraValues cv{
-            {0,0,-10},
-            {1,0,0}, {0,1,0}, {0,0,1}, WIDTH, HEIGHT, PIXEL_DISTANCE};
+            {0,0,5},
+            {1,0,0}, {0,0,1}, {0,1,0}, WIDTH, HEIGHT, PIXEL_DISTANCE};
 
 
 
