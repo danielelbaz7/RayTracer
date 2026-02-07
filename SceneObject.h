@@ -39,8 +39,16 @@ struct Sphere : SceneObject {
         }
 
         float sqrtDisc = sqrt(discriminant);
-        float smallestT = std::min(-dDotP + sqrtDisc, -dDotP - sqrtDisc);
-        return {true, smallestT};
+        float t1 = -dDotP - sqrtDisc;
+        float t2 = -dDotP + sqrtDisc;
+
+        if (t1 >= lowerDistance && t1 <= maxDistance) {
+            return {true, t1};
+        }
+        if (t2 >= lowerDistance && t2 <= maxDistance) {
+            return {true, t2};
+        }
+        return {false, -1};
     }
 
     Vector3 GetNormal(const Vector3 &point) const override {
@@ -71,6 +79,10 @@ struct Plane : SceneObject {
         }
 
         float t = numerator/denominator;
+        if (t < lowerDistance || t > maxDistance) {
+            return {false, -1};
+        }
+
         Vector3 pointOnPlane = {ray.origin + t * ray.direction};
 
         if (abs(dot(pointOnPlane-center, upVector)) > length

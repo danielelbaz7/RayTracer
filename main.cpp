@@ -161,7 +161,7 @@ int main()
 
     // Light: up and a bit left/front
     world.AddLight(Light(
-        Vector3{ 0.0f, 5.0f, 10.0f },  // position
+        Vector3{ -5.0f, 5.0f, 10.0f },  // position
         20.0f                          // intensity
     ));
 
