@@ -58,8 +58,14 @@ inline float length(const Vector3 &a) {
     return std::sqrt((a.x * a.x) + (a.y * a.y) + (a.z * a.z));
 };
 
-inline Vector3 rotate(const Vector3 &vec, float angle) {
-
+//implementation of rodrigues' rotation formula
+inline Vector3 rotate(const Vector3 &vec, float angle, Vector3 &axis) {
+    if (length(axis) != 1.0f) {
+        axis = normalize(axis);
+    }
+    float cosTheta = cos(angle);
+    float sinTheta = sin(angle);
+    return vec * cosTheta + (cross(axis, vec) * sinTheta) + (axis*(dot(axis, vec))*(1-cosTheta));
 }
 
 #endif // RAYTRACER_VECTOR3_H
