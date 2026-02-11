@@ -42,13 +42,13 @@ void getCursorPositions(GLFWwindow* window, double x, double y) {
         double dy = y - mouseY;
         mouseY = std::clamp(y, 0.0, static_cast<double>(SCR_HEIGHT));
 
-        newLookAt += (dy/SCR_HEIGHT) * worldCamera->cv.up;
+        newLookAt += -(dy/SCR_HEIGHT) * worldCamera->cv.up;
     }
 
     newLookAt = normalize(newLookAt);
 
     worldCamera->cv.lookAt = newLookAt;
-    worldCamera->cv.right = normalize(cross(newLookAt, worldCamera->defaultUp));
+    worldCamera->cv.right = normalize(cross(newLookAt, worldCamera->cv.up));
     worldCamera->cv.up = cross(worldCamera->cv.right, newLookAt);
 
 }
