@@ -1,19 +1,57 @@
 // Based on templates from learnopengl.com
 #include <GL/glew.h>
 #define GLFW_INCLUDE_NONE
+#include <assert.h>
 #include <GLFW/glfw3.h>
 
 
 #include <iostream>
+#include <thread>
 
 #include "World.h"
 
 void framebuffer_size_callback(GLFWwindow* window, int width, int height);
 void processInput(GLFWwindow *window, Camera &cam);
 
+Camera* worldCamera;
+
 // settings
-const unsigned int SCR_WIDTH = 800;
-const unsigned int SCR_HEIGHT = 800;
+const unsigned int SCR_WIDTH = 512;
+const unsigned int SCR_HEIGHT = 512;
+
+double mouseX = 0.0;
+double mouseY = 0.0;
+bool firstMouse = true;
+
+void getCursorPositions(GLFWwindow* window, double x, double y) {
+    if (!worldCamera) {
+        std::cout << "No World Camera" << std::endl;
+        return;
+    }
+
+    Vector3 newLookAt = worldCamera->cv.lookAt;
+
+    if (x != mouseX) {
+        double dx = x - mouseX;
+        mouseX = std::clamp(x, 0.0, static_cast<double>(SCR_WIDTH));
+
+        newLookAt += (dx/SCR_WIDTH) * worldCamera->cv.right;
+    }
+
+    if (y != mouseY) {
+        double dy = y - mouseY;
+        mouseY = std::clamp(y, 0.0, static_cast<double>(SCR_HEIGHT));
+
+        newLookAt += (dy/SCR_HEIGHT) * worldCamera->cv.up;
+    }
+
+    newLookAt = normalize(newLookAt);
+
+    worldCamera->cv.lookAt = newLookAt;
+    worldCamera->cv.right = normalize(cross(newLookAt, worldCamera->defaultUp));
+    worldCamera->cv.up = cross(worldCamera->cv.right, newLookAt);
+
+}
 
 
 const char *vertexShaderSource = "#version 330 core\n"
@@ -40,8 +78,7 @@ const char *fragmentShaderSource = "#version 330 core\n"
     "}\n\0";
 
 
-int main()
-{
+int main() {
     // glfw: initialize and configure
     // ------------------------------
     glfwInit();
@@ -56,6 +93,7 @@ int main()
     // glfw window creation
     // --------------------
     GLFWwindow* window = glfwCreateWindow(SCR_WIDTH, SCR_HEIGHT, "Display RGB Array", NULL, NULL);
+    glfwSetCursorPosCallback(window, getCursorPositions);
     if (window == NULL)
     {
         std::cout << "Failed to create GLFW window" << std::endl;
@@ -113,11 +151,11 @@ int main()
     // ------------------------------------------------------------------
     float vertices[] = {
         // positions          // colors           // texture coords
-         0.5f,  0.5f, 0.0f,   1.0f, 0.0f, 0.0f,   1.0f, 1.0f, // top right
-         0.5f, -0.5f, 0.0f,   0.0f, 1.0f, 0.0f,   1.0f, 0.0f, // bottom right
-        -0.5f, -0.5f, 0.0f,   0.0f, 0.0f, 1.0f,   0.0f, 0.0f, // bottom left
-        -0.5f,  0.5f, 0.0f,   1.0f, 1.0f, 0.0f,   0.0f, 1.0f  // top left
-    };
+        1.0f,  1.0f, 0.0f,   1.0f, 0.0f, 0.0f,   1.0f, 1.0f, // top right
+        1.0f, -1.0f, 0.0f,   0.0f, 1.0f, 0.0f,   1.0f, 0.0f, // bottom right
+       -1.0f, -1.0f, 0.0f,   0.0f, 0.0f, 1.0f,   0.0f, 0.0f, // bottom left
+       -1.0f,  1.0f, 0.0f,   1.0f, 1.0f, 0.0f,   0.0f, 1.0f  // top left
+   };
     unsigned int indices[] = {
         0, 1, 3, // first triangle
         1, 2, 3  // second triangle
@@ -158,21 +196,37 @@ int main()
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST_MIPMAP_LINEAR);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
     World world{};
+    worldCamera = &world.camera;
 
     // Light: up and a bit left/front
     world.AddLight(Light(
-        Vector3{ -5.0f, 5.0f, 10.0f },  // position
+        Vector3{ -5.0f, 5.0f, 9.0f },  // position
+        20.0f                          // intensity
+    ));
+
+    world.AddLight(Light(
+        Vector3{ 5.0f, 5.0f, 9.0f },  // position
         20.0f                          // intensity
     ));
 
     // Sphere A (blocker): closer to the light, centered on the line to B
     world.AddSceneObject(std::make_unique<Sphere>(
         2.0f,
-        Vector3{ 2.0f, 5.0f, 6.0f },   // A is in front
+        Vector3{ 2.8f, 5.0f, 2.5f },   // A is in front
         0x0F35FF,
         0.9f,
-        0.2f,
-        32.0f
+        0.9f,
+        50.0f
+    ));
+
+    // Sphere A (blocker): closer to the light, centered on the line to B
+    world.AddSceneObject(std::make_unique<Sphere>(
+        2.0f,
+        Vector3{ -2.8f, 5.0f, 2.5f },   // A is in front
+        0xF2352F,
+        0.9f,
+        0.9f,
+        100.0f
     ));
 
 
@@ -190,11 +244,12 @@ int main()
 
 
     // Create the image (RGB Array) to be displayed
-    const int width  = 512; // keep it in powers of 2!
-    const int height = 512; // keep it in powers of 2!
+    const int width  = SCR_WIDTH; // keep it in powers of 2!
+    const int height = SCR_HEIGHT; // keep it in powers of 2!
 
     float startTime = glfwGetTime();
     static int frameCount{};
+
 
     // render loop
     // -----------
@@ -202,7 +257,6 @@ int main()
     {
         std::array<std::array<uint8_t, width*3>, height> image = world.camera.RayTrace();
         frameCount++;
-        std::cout <<frameCount << std::endl;
 
         unsigned char *data = &image[0][0];
         if (data)

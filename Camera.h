@@ -22,6 +22,7 @@ private:
     static constexpr int HEIGHT{512};
 
 public:
+    Vector3 defaultUp = {0.0f, 1.0f, 0.0f};
     Camera(const std::vector<std::unique_ptr<SceneObject>> &sceneObjectsVec, const std::vector<Light> &lightVec) : sceneObjects(sceneObjectsVec), lights(lightVec) {}
     std::array<std::array<uint8_t, WIDTH*3>, HEIGHT> RayTrace();
 
