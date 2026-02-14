@@ -10,7 +10,8 @@
 std::array<std::array<uint8_t, Camera::WIDTH*3>, Camera::HEIGHT> Camera::RayTrace() {
     for (int i = 0; i < cv.WIDTH*cv.HEIGHT; i++) {
         //returns a ray in the form of P + tD
-        Ray ray = this->MakeRay(i % cv.WIDTH, i / cv.WIDTH);
+        Ray ray = orthogonal ? this->MakeRay(i % cv.WIDTH, i / cv.WIDTH, false)
+        : this->MakeRay(i % cv.WIDTH, i / cv.WIDTH, true);
 
         float smallest_t = INFINITY;
         const SceneObject *currentSceneObject = nullptr;

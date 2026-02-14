@@ -20,13 +20,14 @@ struct cameraValues {
 struct Ray {
     Vector3 origin;
     Vector3 direction;
-    Ray(cameraValues &cv, int xi, int yi) :
+    Ray(cameraValues &cv, int xi, int yi, bool perspective) :
     //resets position to 0,0 in world space, then adds the amount of pixels
     //returns a ray in the form of P + tD
     origin(
         cv.pos + (cv.right * -(((cv.WIDTH/2) - xi) * cv.PIXEL_DISTANCE)) + (cv.up * -(((cv.HEIGHT/2) - yi) * cv.PIXEL_DISTANCE))
         ),
-    direction(cv.lookAt/sqrt(dot(cv.lookAt, cv.lookAt))) {};
+    direction(!perspective ? cv.lookAt/sqrt(dot(cv.lookAt, cv.lookAt)) : origin-cv.pos) {};
+
 
     Ray(Vector3 originParam, Vector3 directionParam) :
     origin(originParam) , direction(directionParam) {};

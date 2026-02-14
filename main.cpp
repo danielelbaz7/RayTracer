@@ -356,6 +356,10 @@ void processInput(GLFWwindow *window, Camera &cam)
     if (glfwGetKey(window, GLFW_KEY_LEFT_SHIFT) == GLFW_PRESS) {
         cam.cv.pos = cam.cv.pos - cam.cv.up;
     }
+
+    if (glfwGetKey(window, GLFW_KEY_Q) == GLFW_PRESS) {
+        cam.orthogonal = !cam.orthogonal;
+    }
 }
 
 // glfw: whenever the window size changed (by OS or user resize) this callback function executes

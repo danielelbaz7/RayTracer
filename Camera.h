@@ -29,6 +29,7 @@ public:
     void AddLight(Vector3 intersectionPoint, const SceneObject *currentSceneObject, const Light &l, const Ray &ray,
                   float &lightPercentage);
 
+    bool orthogonal{false};
 
     cameraValues cv{
             {0,0,5},
@@ -40,8 +41,8 @@ private:
     std::array<std::array<uint8_t, WIDTH*3>, HEIGHT> frameBuffer{};
 
     //this will create and return a ray based on how far we are in the array
-    Ray MakeRay(int xi, int yi) {
-        return Ray(this->cv, xi, yi);
+    Ray MakeRay(int xi, int yi, bool perspective) {
+        return Ray(this->cv, xi, yi, perspective);
     }
 
 };
