@@ -24,6 +24,12 @@ double mouseY = 0.0;
 bool firstMouse = true;
 
 void getCursorPositions(GLFWwindow* window, double x, double y) {
+    if (abs(x) > SCR_WIDTH || x < 0 || abs(y) > SCR_HEIGHT || y < 0) {
+        mouseX = x;
+        mouseY = y;
+        return;
+    }
+
     if (!worldCamera) {
         std::cout << "No World Camera" << std::endl;
         return;
@@ -47,9 +53,22 @@ void getCursorPositions(GLFWwindow* window, double x, double y) {
 
     newLookAt = normalize(newLookAt);
 
+    if (std::abs(dot(newLookAt, worldCamera->defaultUp)) > 0.99f) {
+        mouseX = x;
+        mouseY = y;
+        return;
+    }
+
     worldCamera->cv.lookAt = newLookAt;
-    worldCamera->cv.right = normalize(cross(newLookAt, worldCamera->cv.up));
-    worldCamera->cv.up = cross(worldCamera->cv.right, newLookAt);
+    Vector3 newRight = normalize(cross(newLookAt, worldCamera->defaultUp));
+    Vector3 newUp = cross(newRight, newLookAt);
+
+    worldCamera->cv.right = newRight;
+    worldCamera->cv.up = newUp;
+
+    std::cout << worldCamera->cv.lookAt.x << ", " << worldCamera->cv.lookAt.y << ", " << worldCamera->cv.lookAt.z << std::endl;
+    std::cout << dot(worldCamera->cv.lookAt, worldCamera->cv.right) << std::endl;
+    std::cout << dot(worldCamera->cv.lookAt, worldCamera->cv.up) << std::endl;
 
 }
 
