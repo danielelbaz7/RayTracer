@@ -93,6 +93,9 @@ std::array<std::array<uint8_t, Camera::WIDTH*3>, Camera::HEIGHT> Camera::RayTrac
 void Camera::AddLight(const Vector3 intersectionPoint, const SceneObject *currentSceneObject, const Light &l, const Ray &ray, float &lightPercentage) {
     //normal vector of the tangent plane of the point on the sphere
     Vector3 normalVector = normalize(currentSceneObject->GetNormal(intersectionPoint));
+    if (dot(ray.direction, normalVector) > 0.0f) {
+        normalVector = -normalVector;
+    }
     Vector3 lightVector = l.position - intersectionPoint;
 
     float lightDistanceSquared = std::max(dot(lightVector, lightVector), 0.001f);
