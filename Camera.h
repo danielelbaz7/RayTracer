@@ -17,23 +17,23 @@ class Camera {
 private:
     const std::vector<std::unique_ptr<SceneObject>> &sceneObjects;
     const std::vector<Light> &lights;
-    static constexpr float PIXEL_DISTANCE{0.03};
     static constexpr int WIDTH{512};
     static constexpr int HEIGHT{512};
 
 public:
     Vector3 defaultUp = {0.0f, 0.0f, 1.0f};
+    float pixelDistance{0.03f};
     Camera(const std::vector<std::unique_ptr<SceneObject>> &sceneObjectsVec, const std::vector<Light> &lightVec) : sceneObjects(sceneObjectsVec), lights(lightVec) {}
     std::array<std::array<uint8_t, WIDTH*3>, HEIGHT> RayTrace();
 
     void AddLight(Vector3 intersectionPoint, const SceneObject *currentSceneObject, const Light &l, const Ray &ray,
                   float &lightPercentage);
 
-    bool orthogonal{false};
+    bool orthogonal{true};
 
     cameraValues cv{
             {0,0,5},
-            {1,0,0}, {0,0,1}, {0,1,0}, WIDTH, HEIGHT, PIXEL_DISTANCE};
+            {1,0,0}, {0,0,1}, {0,1,0}, WIDTH, HEIGHT, pixelDistance};
 
 
 

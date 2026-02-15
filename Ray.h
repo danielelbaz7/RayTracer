@@ -24,9 +24,13 @@ struct Ray {
     //resets position to 0,0 in world space, then adds the amount of pixels
     //returns a ray in the form of P + tD
     origin(
+        perspective ? cv.pos :
         cv.pos + (cv.right * -(((cv.WIDTH/2) - xi) * cv.PIXEL_DISTANCE)) + (cv.up * -(((cv.HEIGHT/2) - yi) * cv.PIXEL_DISTANCE))
         ),
-    direction(!perspective ? cv.lookAt/sqrt(dot(cv.lookAt, cv.lookAt)) : origin-cv.pos) {};
+    direction(!perspective ?
+        cv.lookAt/sqrt(dot(cv.lookAt, cv.lookAt)) :
+        normalize(cv.lookAt + (cv.right * -(((cv.WIDTH/2) - xi) * cv.PIXEL_DISTANCE)) + (cv.up * -(((cv.HEIGHT/2) - yi) * cv.PIXEL_DISTANCE)))
+    ) {};
 
 
     Ray(Vector3 originParam, Vector3 directionParam) :

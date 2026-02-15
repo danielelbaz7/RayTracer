@@ -66,10 +66,6 @@ void getCursorPositions(GLFWwindow* window, double x, double y) {
     worldCamera->cv.right = newRight;
     worldCamera->cv.up = newUp;
 
-    std::cout << worldCamera->cv.lookAt.x << ", " << worldCamera->cv.lookAt.y << ", " << worldCamera->cv.lookAt.z << std::endl;
-    std::cout << dot(worldCamera->cv.lookAt, worldCamera->cv.right) << std::endl;
-    std::cout << dot(worldCamera->cv.lookAt, worldCamera->cv.up) << std::endl;
-
 }
 
 
@@ -359,6 +355,16 @@ void processInput(GLFWwindow *window, Camera &cam)
 
     if (glfwGetKey(window, GLFW_KEY_Q) == GLFW_PRESS) {
         cam.orthogonal = !cam.orthogonal;
+        float offset = 3.0f;
+        if (!cam.orthogonal) {
+            cam.cv.pos = cam.cv.pos - cam.cv.lookAt * offset;
+            std::cout << "ABC" << std::endl;
+            cam.cv.PIXEL_DISTANCE = 0.003f;
+        } else {
+            cam.cv.pos = cam.cv.pos + cam.cv.lookAt * offset;
+            cam.cv.PIXEL_DISTANCE = 0.03f;
+        }
+        std::cout << cam.pixelDistance << std::endl;
     }
 }
 
