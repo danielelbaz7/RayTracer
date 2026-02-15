@@ -231,7 +231,8 @@ int main() {
         0x0F35FF,
         0.9f,
         0.9f,
-        50.0f
+        50.0f,
+        0.5f
     ));
 
     // Sphere A (blocker): closer to the light, centered on the line to B
@@ -241,7 +242,8 @@ int main() {
         0xF2352F,
         0.9f,
         0.9f,
-        100.0f
+        100.0f,
+        0.5f
     ));
 
 
@@ -254,7 +256,8 @@ int main() {
             0xFFFFFF,                                     // dark gray
             0.9f, //diffuse
             0.0f,                                        // specular (matte)
-            1.0f                                         // shininess
+            1.0f,                                        // shininess
+            0.0f
     ));
 
 
@@ -358,13 +361,11 @@ void processInput(GLFWwindow *window, Camera &cam)
         float offset = 3.0f;
         if (!cam.orthogonal) {
             cam.cv.pos = cam.cv.pos - cam.cv.lookAt * offset;
-            std::cout << "ABC" << std::endl;
             cam.cv.PIXEL_DISTANCE = 0.003f;
         } else {
             cam.cv.pos = cam.cv.pos + cam.cv.lookAt * offset;
             cam.cv.PIXEL_DISTANCE = 0.03f;
         }
-        std::cout << cam.pixelDistance << std::endl;
     }
 }
 
