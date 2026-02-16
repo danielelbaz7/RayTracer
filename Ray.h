@@ -28,13 +28,13 @@ struct Ray {
         cv.pos + (cv.right * -(((cv.WIDTH/2) - xi) * cv.PIXEL_DISTANCE)) + (cv.up * -(((cv.HEIGHT/2) - yi) * cv.PIXEL_DISTANCE))
         ),
     direction(!perspective ?
-        cv.lookAt/sqrt(dot(cv.lookAt, cv.lookAt)) :
+        normalize(cv.lookAt/sqrt(dot(cv.lookAt, cv.lookAt))) :
         normalize(cv.lookAt + (cv.right * -(((cv.WIDTH/2) - xi) * cv.PIXEL_DISTANCE)) + (cv.up * -(((cv.HEIGHT/2) - yi) * cv.PIXEL_DISTANCE)))
     ) {};
 
 
     Ray(Vector3 originParam, Vector3 directionParam) :
-    origin(originParam) , direction(directionParam) {};
+    origin(originParam) , direction(normalize(directionParam)) {};
 };
 
 
