@@ -23,6 +23,9 @@ double mouseX = 0.0;
 double mouseY = 0.0;
 bool firstMouse = true;
 
+const double EDGE_MARGIN = 2.0;
+const double EDGE_SENSITIVITY = 5.0;
+
 void getCursorPositions(GLFWwindow* window, double x, double y) {
     if (abs(x) > SCR_WIDTH || x < 0 || abs(y) > SCR_HEIGHT || y < 0) {
         mouseX = x;
@@ -354,6 +357,31 @@ void processInput(GLFWwindow *window, Camera &cam)
 
     if (glfwGetKey(window, GLFW_KEY_LEFT_SHIFT) == GLFW_PRESS) {
         cam.cv.pos = cam.cv.pos - cam.cv.up;
+    }
+
+    double dx = 0.0, dy = 0.0;
+    if (mouseX <= EDGE_MARGIN) {
+        dx = -EDGE_SENSITIVITY;
+    } else if (mouseX >= SCR_WIDTH - EDGE_MARGIN) {
+        dx = EDGE_SENSITIVITY;
+    }
+    if (mouseY <= EDGE_MARGIN) {
+        dy = -EDGE_SENSITIVITY;
+    } else if (mouseY >= SCR_HEIGHT - EDGE_MARGIN) {
+        dy = EDGE_SENSITIVITY;
+    }
+
+    if (dx != 0.0 || dy != 0.0) {
+        Vector3 newLookAt = cam.cv.lookAt;
+        newLookAt += (dx / SCR_WIDTH) * cam.cv.right;
+        newLookAt += -(dy / SCR_HEIGHT) * cam.cv.up;
+        newLookAt = normalize(newLookAt);
+
+        if (std::abs(dot(newLookAt, cam.defaultUp)) < 0.99f) {
+            cam.cv.lookAt = newLookAt;
+            cam.cv.right = normalize(cross(newLookAt, cam.defaultUp));
+            cam.cv.up = cross(cam.cv.right, newLookAt);
+        }
     }
 
     if (glfwGetKey(window, GLFW_KEY_Q) == GLFW_PRESS) {
