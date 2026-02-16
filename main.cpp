@@ -21,17 +21,24 @@ const unsigned int SCR_HEIGHT = 512;
 
 double mouseX = 0.0;
 double mouseY = 0.0;
+double rawMouseX = 0.0;
+double rawMouseY = 0.0;
 bool firstMouse = true;
 
 const double EDGE_MARGIN = 2.0;
-const double EDGE_SENSITIVITY = 5.0;
+const double EDGE_SENSITIVITY = 10.0;
 
 void getCursorPositions(GLFWwindow* window, double x, double y) {
     if (abs(x) > SCR_WIDTH || x < 0 || abs(y) > SCR_HEIGHT || y < 0) {
-        mouseX = x;
-        mouseY = y;
+        rawMouseX = x;
+        rawMouseY = y;
+        mouseX = std::clamp(x, 0.0, static_cast<double>(SCR_WIDTH));
+        mouseY = std::clamp(y, 0.0, static_cast<double>(SCR_HEIGHT));
         return;
     }
+
+    rawMouseX = x;
+    rawMouseY = y;
 
     if (!worldCamera) {
         std::cout << "No World Camera" << std::endl;
@@ -360,15 +367,15 @@ void processInput(GLFWwindow *window, Camera &cam)
     }
 
     double dx = 0.0, dy = 0.0;
-    if (mouseX <= EDGE_MARGIN) {
-        dx = -EDGE_SENSITIVITY;
-    } else if (mouseX >= SCR_WIDTH - EDGE_MARGIN) {
-        dx = EDGE_SENSITIVITY;
+    if (rawMouseX < 0) {
+        dx = -EDGE_SENSITIVITY * (1.0 + std::abs(rawMouseX) / SCR_WIDTH);
+    } else if (rawMouseX > SCR_WIDTH) {
+        dx = EDGE_SENSITIVITY * (1.0 + (rawMouseX - SCR_WIDTH) / SCR_WIDTH);
     }
-    if (mouseY <= EDGE_MARGIN) {
-        dy = -EDGE_SENSITIVITY;
-    } else if (mouseY >= SCR_HEIGHT - EDGE_MARGIN) {
-        dy = EDGE_SENSITIVITY;
+    if (rawMouseY < 0) {
+        dy = -EDGE_SENSITIVITY * (1.0 + std::abs(rawMouseY) / SCR_HEIGHT);
+    } else if (rawMouseY > SCR_HEIGHT) {
+        dy = EDGE_SENSITIVITY * (1.0 + (rawMouseY - SCR_HEIGHT) / SCR_HEIGHT);
     }
 
     if (dx != 0.0 || dy != 0.0) {
