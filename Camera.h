@@ -26,7 +26,7 @@ public:
     Camera(const std::vector<std::unique_ptr<SceneObject>> &sceneObjectsVec, const std::vector<Light> &lightVec) : sceneObjects(sceneObjectsVec), lights(lightVec) {}
     std::array<std::array<uint8_t, WIDTH*3>, HEIGHT> RayTrace();
 
-    uint32_t CastRay(const Ray &ray);
+    uint32_t CastRay(const Ray &ray, int depth = 5);
 
     Vector3 TraceRay(const Ray &ray);
 

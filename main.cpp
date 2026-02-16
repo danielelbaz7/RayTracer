@@ -232,7 +232,7 @@ int main() {
         0.9f,
         0.9f,
         50.0f,
-        0.5f
+        0.0f
     ));
 
     // Sphere A (blocker): closer to the light, centered on the line to B

@@ -23,7 +23,7 @@ std::array<std::array<uint8_t, Camera::WIDTH*3>, Camera::HEIGHT> Camera::RayTrac
     return frameBuffer;
 }
 
-uint32_t Camera::CastRay(const Ray &ray) {
+uint32_t Camera::CastRay(const Ray &ray, int depth) {
     float smallest_t = INFINITY;
     const SceneObject *currentSceneObject = nullptr;
 
@@ -86,15 +86,15 @@ uint32_t Camera::CastRay(const Ray &ray) {
 
     }
 
-    uint32_t additionalColor;
+    uint32_t additionalColor = 0x000000;
     float refl = currentSceneObject->reflectivity;
 
-    if (refl > 0.0f) {
+    if (refl > 0.0f && depth > 0) {
         Vector3 sceneObjectNormal = currentSceneObject->GetNormal(intersectionPoint);
         Vector3 reflectedRayDirection = ray.direction - (2*dot(ray.direction, sceneObjectNormal) * sceneObjectNormal);
-        Ray ray{intersectionPoint, normalize(reflectedRayDirection)};
+        Ray reflectedRay{intersectionPoint, normalize(reflectedRayDirection)};
 
-        additionalColor = CastRay(ray);
+        additionalColor = CastRay(reflectedRay, depth - 1);
     }
 
     lightPercentage = std::clamp(lightPercentage, 0.0f, 1.0f);
@@ -103,9 +103,9 @@ uint32_t Camera::CastRay(const Ray &ray) {
     noReflectionColor += static_cast<uint8_t>(((sceneObjectColor & 0x00FF00) >> 8u) * lightPercentage) << 8u;
     noReflectionColor += static_cast<uint8_t>(((sceneObjectColor & 0xFF0000) >> 16u) * lightPercentage) << 16u;
 
-    uint32_t finalColor = static_cast<uint8_t>((additionalColor & 0x0000FF) * refl + ((1.0f-refl) * noReflectionColor));
-    finalColor += static_cast<uint8_t>(((additionalColor & 0x00FF00) >> 8u) * refl + ((1.0f-refl) * noReflectionColor)) << 8u;
-    finalColor += static_cast<uint8_t>(((additionalColor & 0xFF0000) >> 16u) * refl + ((1.0f-refl) * noReflectionColor)) << 16u;
+    uint32_t finalColor = static_cast<uint8_t>((additionalColor & 0x0000FF) * refl + ((1.0f-refl) * (noReflectionColor & 0x0000FF)));
+    finalColor += static_cast<uint8_t>(((additionalColor & 0x00FF00) >> 8u) * refl + ((1.0f-refl) * ((noReflectionColor & 0x00FF00) >> 8u))) << 8u;
+    finalColor += static_cast<uint8_t>(((additionalColor & 0xFF0000) >> 16u) * refl + ((1.0f-refl) * ((noReflectionColor & 0xFF0000) >> 16u))) << 16u;
 
     return finalColor;
 
