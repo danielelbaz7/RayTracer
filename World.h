@@ -19,9 +19,9 @@ public:
 
     World() : camera(sceneObjects, lights) {};
     Camera camera;
+    std::vector<std::unique_ptr<SceneObject>> sceneObjects{};
 
 private:
-    std::vector<std::unique_ptr<SceneObject>> sceneObjects{};
     std::vector<Light> lights{};
 };
 

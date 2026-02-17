@@ -223,32 +223,29 @@ int main() {
     World world{};
     worldCamera = &world.camera;
 
-    // Light: up and a bit left/front
     world.AddLight(Light(
-        Vector3{ -5.0f, 5.0f, 9.0f },  // position
-        20.0f                          // intensity
+        Vector3{ -5.0f, 5.0f, 9.0f },
+        50.0f
     ));
 
     world.AddLight(Light(
-        Vector3{ 5.0f, 5.0f, 9.0f },  // position
-        20.0f                          // intensity
+        Vector3{ 5.0f, 5.0f, 9.0f },
+        50.0f
     ));
 
-    // Sphere A (blocker): closer to the light, centered on the line to B
     world.AddSceneObject(std::make_unique<Sphere>(
         2.0f,
-        Vector3{ 2.8f, 5.0f, 2.5f },   // A is in front
+        Vector3{ 2.8f, 5.0f, 2.5f },
         0x0F35FF,
         0.9f,
         0.9f,
         50.0f,
-        0.0f
+        0.2f
     ));
 
-    // Sphere A (blocker): closer to the light, centered on the line to B
     world.AddSceneObject(std::make_unique<Sphere>(
         2.0f,
-        Vector3{ -2.8f, 5.0f, 2.5f },   // A is in front
+        Vector3{ -2.8f, 5.0f, 2.5f },
         0xF2352F,
         0.9f,
         0.9f,
@@ -256,18 +253,29 @@ int main() {
         0.5f
     ));
 
+    world.AddSceneObject(std::make_unique<Sphere>(
+        2.0f,
+        Vector3{ 5.8f, 2.0f, 6.5f },
+        0x11F422,
+        0.9f,
+        0.9f,
+        100.0f,
+        0.5f
+    ));
+
+
 
     world.AddSceneObject(std::make_unique<Plane>(
-            Vector3{ 0.0f, 5.5f, 0.0f },                 // point on plane
-            normalize(Vector3{ 0.0f, -0.3, 1.0f }),     // slightly tilted normal
+            Vector3{ 0.0f, 5.5f, 0.0f },
+            normalize(Vector3{ 0.0f, -0.3, 1.0f }),
             // spec
             12.0f,
             8.0f,
-            0xFFFFFF,                                     // dark gray
-            0.9f, //diffuse
-            0.0f,                                        // specular (matte)
-            1.0f,                                        // shininess
-            0.0f
+            0xFFFFFF,
+            0.9f,
+            0.0f,
+            1.0f,
+            0.7f
     ));
 
 
@@ -368,14 +376,14 @@ void processInput(GLFWwindow *window, Camera &cam)
 
     double dx = 0.0, dy = 0.0;
     if (rawMouseX < 0) {
-        dx = -EDGE_SENSITIVITY * (1.0 + std::abs(rawMouseX) / SCR_WIDTH);
+        dx = -EDGE_SENSITIVITY;
     } else if (rawMouseX > SCR_WIDTH) {
-        dx = EDGE_SENSITIVITY * (1.0 + (rawMouseX - SCR_WIDTH) / SCR_WIDTH);
+        dx = EDGE_SENSITIVITY;
     }
     if (rawMouseY < 0) {
-        dy = -EDGE_SENSITIVITY * (1.0 + std::abs(rawMouseY) / SCR_HEIGHT);
+        dy = -EDGE_SENSITIVITY;
     } else if (rawMouseY > SCR_HEIGHT) {
-        dy = EDGE_SENSITIVITY * (1.0 + (rawMouseY - SCR_HEIGHT) / SCR_HEIGHT);
+        dy = EDGE_SENSITIVITY;
     }
 
     if (dx != 0.0 || dy != 0.0) {
